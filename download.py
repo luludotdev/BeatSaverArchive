@@ -58,3 +58,12 @@ def download(song):
         print('Downloading {}'.format(name))
     except:
         print('Failed to download {}. An Error occoured'.format(html.unescape(name)))
+
+def main():
+    pages = get_total()
+    for page in range(pages):
+        songs = fetch_single(page)
+        for song in songs:
+            download(song)
+
+main()
