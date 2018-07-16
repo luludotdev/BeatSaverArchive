@@ -1,5 +1,7 @@
 import requests
+import os
 import zipfile
+import json
 import html
 import io
 
@@ -13,6 +15,29 @@ def get_total():
 def fetch_single(start: int):
     resp = requests.get(api.format(start)).json()
     return resp['songs']
+
+def check_json(key: str):
+    if os.path.isfile('songs.json'):
+        with open('songs.json', 'r') as handle:
+            check = json.loads(handle.read())
+            if key in check:
+                return True
+            else:
+                return False
+    else:
+        return False
+
+def write_json(key: str): 
+    if os.path.isfile('songs.json'):
+        with open('songs.json', 'r') as handle:
+            data = json.loads(handle.read())
+    else:
+        data = []
+
+    data.append(key)
+
+    with open('songs.json', 'w') as handle:
+        handle.write(json.dumps(data))
 
 def download(song):
     key = song['key']
