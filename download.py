@@ -8,13 +8,11 @@ import io
 api = 'https://beatsaver.com/api/songs/new/{}'
 dl = 'https://beatsaver.com/download/{}'
 
-def get_total():
-    resp = requests.get(api.format(0)).json()
-    return resp['total']
-
-def fetch_single(start: int):
+def fetch_page(start: int):
     resp = requests.get(api.format(start)).json()
-    return resp['songs'][0]
+    songs = resp['songs']
+    num = len(songs)
+    return songs, num + start, num == 0
 
 def check_json(key: str):
     if os.path.isfile('songs.json'):
@@ -60,9 +58,12 @@ def download(song):
         print('Failed to download {}. An Error occoured'.format(html.unescape(name)))
 
 def main():
-    pages = get_total()
-    for page in range(pages):
-        song = fetch_single(page)
-        download(song)
+    done = False
+    start = 0
+    
+    while not done:
+        songs, start, done = fetch_page(start)
+        for song in songs:
+            download(song)
 
 main()
