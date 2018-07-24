@@ -14,7 +14,7 @@ def get_total():
 
 def fetch_single(start: int):
     resp = requests.get(api.format(start)).json()
-    return resp['songs']
+    return resp['songs'][0]
 
 def check_json(key: str):
     if os.path.isfile('songs.json'):
@@ -62,8 +62,7 @@ def download(song):
 def main():
     pages = get_total()
     for page in range(pages):
-        songs = fetch_single(page)
-        for song in songs:
-            download(song)
+        song = fetch_single(page)
+        download(song)
 
 main()
